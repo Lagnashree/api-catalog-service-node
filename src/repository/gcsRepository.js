@@ -2,8 +2,8 @@ const path = require("path");
 const { Storage } = require("@google-cloud/storage");
 
 let serviceKey = "";
-    const projectId = 'testpoc-361819';
-    let bucketName = "api_catalog_bucket";
+    const projectId = process.env.PROJECT_ID;
+    let bucketName = process.env.BUCKET_NAME;
     serviceKey = path.join(__dirname, "..", "/service-account.json");
     const storage = new Storage({ projectId: projectId, keyFilename: serviceKey });
 
