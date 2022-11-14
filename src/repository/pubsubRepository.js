@@ -3,7 +3,7 @@ const { PubSub } = require("@google-cloud/pubsub");
 const topicName = 'api-catalog-topic';
 
 exports.postEvent = async function (eventData) {
-    const projectId = 'testpoc-361819';
+    const projectId = process.env.PROJECT_ID;
     let serviceKey = "";
 
     //if (process.env.ENVIRONMENT === "LOCAL") {
