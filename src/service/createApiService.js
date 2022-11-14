@@ -1,8 +1,10 @@
-  const gitFileDownloader = require("../utils/gitFileDownloader");
+const gitFileDownloader = require("../utils/gitFileDownloader");
 const axios = require('axios');
 const https = require('https');
 const gcsAdapter = require("../repository/gcsRepository");
 const pubsubRepository = require("../repository/pubsubRepository");
+const yaml = require('js-yaml');
+const { BaseError, notFound, internalServerError, serviceUnavailable, badRequest} = require('../utils/error')
 
 let adminUrl = ''
 let kongConfig = {
@@ -27,6 +29,8 @@ exports.postApiInvoker = async function (reqBody) {
             })
         });
 
+
+
         let gatewayCreateServiceReqBody = {
             name: reqBody.apiName,
             protocol: 'http',
@@ -40,12 +44,16 @@ exports.postApiInvoker = async function (reqBody) {
             let downloadFileFromGit = await instance.get(reqBody.specUrl, gitConfig);
             if (downloadFileFromGit.status == 200)
                 specFileFromGit = downloadFileFromGit.data;
-            console.log('downloading spec file from GIT is successsful');
+                const obj = yaml.load(specFileFromGit);
+            console.log('downloading spec file from GIT is successsful', obj);
         }
         catch (error) {
             console.log(error)
+            throw new BaseError(internalServerError, `unable to download spec file for API ${apiName}`)
         }
 
+        
+    
         try {
             let gatewayCreateResponse = await instance.post(`https://ctf.admin.api.ingka.com/services/`, gatewayCreateServiceReqBody, kongConfig);
             if (gatewayCreateResponse.status == 201)
@@ -53,10 +61,19 @@ exports.postApiInvoker = async function (reqBody) {
         }
         catch (error) {
             console.log(error)
+            throw new BaseError(internalServerError, `unable to create service in kong gateway for API ${apiName}`)
         }
 
-        await gcsAdapter.postFile(reqBody.apiName, reqBody.apiVersion, reqBody.environment, specFileFromGit);
 
+        try{
+        await gcsAdapter.postFile(reqBody.apiName, reqBody.apiVersion, reqBody.environment, specFileFromGit);
+        }
+        catch (error){
+            console.log(error)
+            throw new BaseError(internalServerError, `unable to store spec file in GCS for API ${apiName}`)
+        }
+        
+        
         const eventData = {
             apiTitle: reqBody.apiName,
             apiVersion: reqBody.apiVersion,
@@ -64,11 +81,20 @@ exports.postApiInvoker = async function (reqBody) {
             catalog: reqBody.catalogName,
             event: 'create'
         }
+        try{
         await pubsubRepository.postEvent(eventData);
+        }
+        catch (error){
+            console.log(error)
+            throw new BaseError(internalServerError, `unable to publish creation message in pubsub for API ${apiName}`)
+        }
         return { status: 201, detail: 'success' }
     }
+
+
+
     catch (error) {
-        console.log('error');
+        console.log('error in create service');
         throw error;
     }
 }    
