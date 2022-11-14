@@ -9,13 +9,13 @@ const { BaseError, notFound, internalServerError, serviceUnavailable, badRequest
 let adminUrl = ''
 let kongConfig = {
     headers: {
-        'Kong-Admin-Token': 'apimrbac3fwe3434',
+        'Kong-Admin-Token': process.env.GW_TOKEN,
         'Content-Type': 'application/json'
     }
 }
 let gitConfig = {
     headers: {
-        'Authorization': 'token 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',
+        'Authorization': process.env.GIT_TOKEN,
         'Accept': 'application/vnd.github.v3.raw'
     }
 }
@@ -55,7 +55,7 @@ exports.postApiInvoker = async function (reqBody) {
         
     
         try {
-            let gatewayCreateResponse = await instance.post(`https://ctf.admin.api.ingka.com/services/`, gatewayCreateServiceReqBody, kongConfig);
+            let gatewayCreateResponse = await instance.post(`${process.env.GW_URL}/services/`, gatewayCreateServiceReqBody, kongConfig);
             if (gatewayCreateResponse.status == 201)
                 console.log('await gateway service creation is successsful');
         }
