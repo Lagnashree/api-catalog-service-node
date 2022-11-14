@@ -6,7 +6,7 @@ const { BaseError, notFound, internalServerError, serviceUnavailable, badRequest
 
 let kongConfig = {
     headers: {
-        'Kong-Admin-Token': 'apimrbac3fwe3434'
+        'Kong-Admin-Token': process.env.GW_TOKEN
     }
 }
 
@@ -20,7 +20,7 @@ exports.deleteApiInfo = async function (apiName, apiVersion, environment) {
 
 
         try {
-            let gatewayDeleteResponse = await instance.delete(`https://ctf.admin.api.ingka.com/services/${apiName}`, kongConfig);
+            let gatewayDeleteResponse = await instance.delete(`${process.env.GW_URL}/services/${apiName}`, kongConfig);
             if (gatewayCreateResponse.status == 20)
                 console.log('gateway service deletion is successsful');
         }
