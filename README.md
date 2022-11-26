@@ -18,26 +18,26 @@ Allow TCP 8001 PORT in newtwork firewall
 ### Step 2:
 Logged into VM and ran below steps. It would install required dependency and download kong binaries and install the package
 
-    ```
-       sudo apt update && sudo apt upgrade &&
-       sudo apt install curl &&
-       sudo apt install lsb-release &&
-       curl -Lo kong-enterprise-edition-3.0.1.0.all.deb "https://download.konghq.com/gateway-3.x-debian-$(lsb_release -cs)/pool/all/k/kong-enterprise-edition/kong-enterprise-edition_3.0.1.0_amd64.deb" &&
-       sudo dpkg -i kong-enterprise-edition-3.0.1.0.all.deb
-    ``` 
+```
+sudo apt update && sudo apt upgrade &&
+sudo apt install curl &&
+sudo apt install lsb-release &&
+curl -Lo kong-enterprise-edition-3.0.1.0.all.deb "https://download.konghq.com/gateway-3.x-debian-$(lsb_release -cs)/pool/all/k/kong-enterprise-edition/kong-enterprise-edition_3.0.1.0_amd64.deb" &&
+sudo dpkg -i kong-enterprise-edition-3.0.1.0.all.deb
+``` 
 
 ### Step 4:
 set up a postgres DB for kong Gateway and Provision a database and a user 
 
-    ```
-     CREATE USER kong WITH PASSWORD 'super_secret'; CREATE DATABASE kong OWNER kong;
-    ```
+```
+CREATE USER kong WITH PASSWORD 'super_secret'; CREATE DATABASE kong OWNER kong;
+```
     
 ### Step 3
 Setup config
 
-    ```
-    sudo cp /etc/kong/kong.conf.default /etc/kong/kong.conf
-    ```
+```
+sudo cp /etc/kong/kong.conf.default /etc/kong/kong.conf
+```
 
 open the /etc/kong/kong.conf and add below lines
