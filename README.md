@@ -7,22 +7,16 @@ The code base here covers the API Gateway installation and setup and nodejs appl
     <img src="arch1.png">
 </div>
 
-##
-
-
-## Kong OSS Installation:
+## Kong OSS Installation
 
 Here I have chosen GCP VM to install the kong OSS version 3.0.x (Note this installation is not ready for production use but to set up an quick kong GW to demo)
 
 ### Step 1
-
-    In GCP console create a VM with below details
-  
-    Allow TCP 8001 PORT in newtwork firewall
+In GCP console create a VM with below details
+Allow TCP 8001 PORT in newtwork firewall
     
 ### Step 2:
-
-    Logged into VM and ran below steps. It would install required dependency and download kong binaries and install the package
+Logged into VM and ran below steps. It would install required dependency and download kong binaries and install the package
 
     ```
        sudo apt update && sudo apt upgrade &&
@@ -33,17 +27,17 @@ Here I have chosen GCP VM to install the kong OSS version 3.0.x (Note this insta
     ``` 
 
 ### Step 4:
-    set up a postgres DB for kong Gateway and Provision a database and a user 
+set up a postgres DB for kong Gateway and Provision a database and a user 
 
     ```
      CREATE USER kong WITH PASSWORD 'super_secret'; CREATE DATABASE kong OWNER kong;
     ```
     
 ### Step 3
-    Setup config
+Setup config
 
     ```
     sudo cp /etc/kong/kong.conf.default /etc/kong/kong.conf
     ```
 
-    open the /etc/kong/kong.conf and add below lines
+open the /etc/kong/kong.conf and add below lines
